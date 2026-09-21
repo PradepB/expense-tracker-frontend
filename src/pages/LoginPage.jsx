@@ -4,8 +4,8 @@ import { TrendingUp, Lock } from 'lucide-react';
 
 export default function LoginPage() {
   const { login } = useFinance();
-  const [email, setEmail] = useState('admin@finance.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
@@ -44,7 +44,7 @@ export default function LoginPage() {
               required
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Password</label>
             <input
