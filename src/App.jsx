@@ -9,6 +9,7 @@ import ExpensesPage from './pages/ExpensesPage';
 import BudgetPage from './pages/BudgetPage';
 import SimulatorPage from './pages/SimulatorPage';
 import AccountsPage from './pages/AccountsPage';
+import StocksPage from './pages/StocksPage';
 import LoginPage from './pages/LoginPage';
 import ExpenseFormModal from './components/expenses/ExpenseFormModal';
 import { useFinance } from './hooks/useFinance';
@@ -54,6 +55,7 @@ export default function App() {
               <Route path="/budget" element={<BudgetPage />} />
               <Route path="/simulator" element={<SimulatorPage />} />
               <Route path="/accounts" element={<AccountsPage />} />
+              <Route path="/stocks" element={<StocksPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
           </main>

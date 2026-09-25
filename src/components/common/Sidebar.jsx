@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Activity, FileText, Target, Car, Landmark } from 'lucide-react';
+import { Activity, FileText, Target, Car, Landmark, TrendingUp } from 'lucide-react';
 import { useFinance } from '../../hooks/useFinance';
 import { SALARY_MONTHLY } from '../../utils/constants';
 
@@ -16,7 +16,8 @@ export default function Sidebar({ darkMode }) {
     { id: '/expenses', label: 'Monthly Expenses & Log', icon: FileText },
     { id: '/budget', label: 'Goal Milestones', icon: Target },
     { id: '/simulator', label: 'Car Loan Simulator', icon: Car },
-    { id: '/accounts', label: 'Multi-Account Topology', icon: Landmark }
+    { id: '/accounts', label: 'Multi-Account Topology', icon: Landmark },
+    { id: '/stocks', label: 'Stocks & IPOs', icon: TrendingUp }
   ];
 
   const totalActualLiving = summary.Living || 0;
