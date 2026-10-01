@@ -3,8 +3,15 @@ import api from '../services/api';
 
 export const FinanceContext = createContext();
 
+const getCurrentMonthString = () => {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${year}-${month}`;
+};
+
 export const FinanceProvider = ({ children }) => {
-  const [selectedMonth, setSelectedMonth] = useState('2026-09');
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonthString());
   const [expenses, setExpenses] = useState([]);
   const [goals, setGoals] = useState([]);
   const [budget, setBudget] = useState(null);

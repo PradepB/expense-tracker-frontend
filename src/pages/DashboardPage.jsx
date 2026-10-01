@@ -180,16 +180,26 @@ export default function DashboardPage() {
               <CreditCard className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold">{formatINR(totalActualLiving)}</div>
-          <div className="text-xs text-slate-500 mt-1 space-y-1">
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="text-2xl font-bold">{formatINR(totalActualLiving)}</span>
+            <span className="text-xs font-medium text-slate-500">spent</span>
+          </div>
+          <div className="text-xs text-slate-500 mt-2 space-y-1.5">
             <div className="flex items-center justify-between">
-              <span>Planned: {formatINR(totalPlannedLiving)}</span>
+              <span>Planned: <span className="font-semibold text-slate-700 dark:text-slate-300">{formatINR(totalPlannedLiving)}</span></span>
               <span className={totalActualLiving <= totalPlannedLiving ? 'text-emerald-600 font-semibold' : 'text-rose-600 font-semibold'}>
                 {totalActualLiving <= totalPlannedLiving ? 'Within Plan' : 'Over Limit'}
               </span>
             </div>
-            <div>
-              <span className="font-semibold text-amber-500">{((totalActualLiving / currentSalary) * 100).toFixed(1)}%</span> of monthly salary
+            <div className="flex flex-col gap-1 pt-1 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex justify-between">
+                <span>Planned % of Salary:</span>
+                <span className="font-semibold text-amber-600 dark:text-amber-500">{((totalPlannedLiving / currentSalary) * 100).toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Spent % of Salary:</span>
+                <span className="font-semibold text-rose-600 dark:text-rose-500">{((totalActualLiving / currentSalary) * 100).toFixed(1)}%</span>
+              </div>
             </div>
           </div>
         </div>
@@ -231,10 +241,18 @@ export default function DashboardPage() {
               <Sparkles className="h-4 w-4 text-emerald-600" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold">{formatINR(currentDiscretionaryRemaining)}</div>
-          <p className="text-xs mt-1 opacity-80">
-            {currentDiscretionaryRemaining >= 0 ? 'Liquid safety cash in HDFC' : 'Overspent take-home!'}
-          </p>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="text-2xl font-bold">{formatINR(currentDiscretionaryRemaining)}</span>
+          </div>
+          <div className="text-xs mt-2 space-y-1.5 opacity-90">
+            <div className="flex justify-between border-b border-black/10 dark:border-white/10 pb-1">
+              <span>% of Salary Remaining:</span>
+              <span className="font-bold">{((currentDiscretionaryRemaining / currentSalary) * 100).toFixed(1)}%</span>
+            </div>
+            <p className="pt-0.5">
+              {currentDiscretionaryRemaining >= 0 ? 'Liquid safety cash in HDFC' : 'Overspent take-home!'}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -247,7 +265,9 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3 text-xs">
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-amber-500"></span> Living</span>
+            <div className="w-px h-3 bg-slate-300 dark:bg-slate-700"></div>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-blue-500"></span> Investments</span>
+            <div className="w-px h-3 bg-slate-300 dark:bg-slate-700"></div>
             <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500"></span> Savings</span>
             <button 
               onClick={() => setIsAddCatOpen(!isAddCatOpen)}
@@ -291,13 +311,24 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <div className="divide-y divide-slate-100 dark:divide-slate-800/80 mt-2 text-xs sm:text-sm">
-          {currentCategories.map(item => {
-            const actual = actualsMap[item.id] || 0;
-            const variance = item.planned - actual;
-            const isOver = actual > item.planned && item.planned > 0;
+        <div className="mt-2 text-xs sm:text-sm">
+          {['Living', 'Investments', 'Savings'].map(categoryGroup => {
+            const groupItems = currentCategories.filter(i => i.category === categoryGroup);
+            if (groupItems.length === 0) return null;
 
             return (
+              <div key={categoryGroup} className="mb-4">
+                <div className="text-sm font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-wider mb-1 px-1 border-b-2 border-slate-200 dark:border-slate-700 pb-2 flex items-center gap-2">
+                  <span className={`h-2.5 w-2.5 rounded-full ${categoryGroup === 'Living' ? 'bg-amber-500' : categoryGroup === 'Investments' ? 'bg-blue-500' : 'bg-emerald-500'}`}></span>
+                  {categoryGroup} BUDGET
+                </div>
+                <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                  {groupItems.map(item => {
+                    const actual = actualsMap[item.id] || 0;
+                    const variance = item.planned - actual;
+                    const isOver = actual > item.planned && item.planned > 0;
+
+                    return (
               <div key={item.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="sm:w-1/3">
                   <div className="flex items-center gap-2">
@@ -358,6 +389,8 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
+                  <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+
                   <div className="text-right flex items-center justify-end gap-2">
                     <div>
                       <span className="text-[11px] text-slate-400 block">Actual Logged</span>
@@ -377,6 +410,8 @@ export default function DashboardPage() {
                     </button>
                   </div>
 
+                  <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+
                   <div className="w-24 text-right">
                     <span className="text-[11px] text-slate-400 block">Variance</span>
                     <span className={`font-semibold text-xs ${
@@ -389,6 +424,10 @@ export default function DashboardPage() {
               </div>
             );
           })}
+        </div>
+      </div>
+    );
+  })}
           
           {/* Unmapped / Others Row */}
           {unmappedTotal > 0 && (
@@ -414,6 +453,8 @@ export default function DashboardPage() {
                   </div>
                 </div>
 
+                <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+
                 <div className="text-right flex items-center justify-end gap-2">
                   <div>
                     <span className="text-[11px] text-slate-400 block">Actual Logged</span>
@@ -423,6 +464,8 @@ export default function DashboardPage() {
                   </div>
                   <div className="w-[28px]"></div> {/* Match spacing */}
                 </div>
+
+                <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
 
                 <div className="w-24 text-right">
                   <span className="text-[11px] text-slate-400 block">Variance</span>
@@ -444,6 +487,9 @@ export default function DashboardPage() {
                 <span className="text-[11px] text-slate-400 block">Planned</span>
                 <span className="font-bold">{formatINR(totalPlannedAll)}</span>
               </div>
+
+              <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+
               <div className="text-right flex items-center justify-end gap-2">
                 <div>
                   <span className="text-[11px] text-slate-400 block">Actual Logged</span>
@@ -453,6 +499,9 @@ export default function DashboardPage() {
                 </div>
                 <div className="w-[28px]"></div> {/* Match spacing of the quick add button */}
               </div>
+
+              <div className="hidden sm:block w-px h-8 bg-slate-200 dark:bg-slate-700"></div>
+
               <div className="w-24 text-right">
                 <span className="text-[11px] text-slate-400 block">Variance</span>
                 <span className={`font-bold text-xs ${totalVarianceAll >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
